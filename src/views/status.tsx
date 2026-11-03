@@ -1,4 +1,10 @@
+import type { NightCounts } from '../digest/counts.js';
 import type { Status } from '../status.js';
+
+// Missing counts render as `—`, never dropped (styleguide).
+function countsText(c: NightCounts | null): string {
+  return c ? ` · ok ${c.ok} · retry ${c.retry} · fail ${c.fail}` : ' · —';
+}
 
 export function StatusBoard({ status }: { status: Status }) {
   return (
@@ -20,7 +26,10 @@ export function StatusBoard({ status }: { status: Status }) {
       ) : (
         <ul>
           {status.nights.map((n) => (
-            <li>{n}</li>
+            <li>
+              <a href={`/digest/${n}`}>{n}</a>
+              <span class="mute">{countsText(status.nightCounts[n] ?? null)}</span>
+            </li>
           ))}
         </ul>
       )}
